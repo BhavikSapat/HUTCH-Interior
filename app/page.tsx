@@ -576,7 +576,30 @@ const FeaturedProjects = () => {
 };
 
 // Contact Section
+import { useForm, SubmitHandler } from "react-hook-form";
+interface IFormInput {
+  fullName: string;
+  email: string;
+  query: string;
+}
 const Contact = () => {
+  const { register, handleSubmit } = useForm<IFormInput>();
+
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    const phoneNumber = "9028965101";
+
+    const textMessage = `🏡 *New Design Inquiry*
+
+Full Name: ${data.fullName}
+Email: ${data.email}
+Query:${data.query}`;
+
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      textMessage,
+    )}`;
+
+    window.open(whatsappUrl, "_blank");
+  };
   return (
     <section
       id="contact"
@@ -643,16 +666,17 @@ const Contact = () => {
           </div>
 
           <div className="bg-[#F7F4F0] p-8 lg:p-10">
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="space-y-5">
                 <div>
                   <label className="block text-sm font-medium text-[#1A1A1A] mb-1">
                     Your Name
                   </label>
                   <input
+                    {...register("fullName")}
                     type="text"
                     className="w-full px-4 py-3 bg-white border border-[#EDE8E1] focus:border-[#C4A882] outline-none transition-colors"
-                    placeholder="John Doe"
+                    placeholder="Bhavik Sapat"
                   />
                 </div>
 
@@ -661,9 +685,10 @@ const Contact = () => {
                     Your Email
                   </label>
                   <input
+                    {...register("email")}
                     type="email"
                     className="w-full px-4 py-3 bg-white border border-[#EDE8E1] focus:border-[#C4A882] outline-none transition-colors"
-                    placeholder="john@example.com"
+                    placeholder="bhavik@gamil.com"
                   />
                 </div>
 
@@ -672,13 +697,17 @@ const Contact = () => {
                     Message
                   </label>
                   <textarea
+                    {...register("query")}
                     rows={4}
                     className="w-full px-4 py-3 bg-white border border-[#EDE8E1] focus:border-[#C4A882] outline-none transition-colors resize-none"
                     placeholder="Tell us about your project..."
                   />
                 </div>
 
-                <Button className="w-full bg-[#1A1A1A] hover:bg-[#333] text-white px-8 py-6 text-sm uppercase tracking-wider rounded-none transition-all">
+                <Button
+                  type="submit"
+                  className="w-full bg-[#1A1A1A] hover:bg-[#333] text-white px-8 py-6 text-sm uppercase tracking-wider rounded-none transition-all"
+                >
                   Send Message
                 </Button>
               </div>
