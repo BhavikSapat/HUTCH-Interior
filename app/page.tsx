@@ -754,7 +754,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex gap-20 md:gap-46 md:justify-between   justify-center text-left ">
+          <div className="flex gap-10 md:gap-46 md:justify-between  justify-center text-left ">
             <div>
               <h3 className="mb-4 text-sm font-medium uppercase tracking-wider text-[#C4A882]">
                 Quick Links
