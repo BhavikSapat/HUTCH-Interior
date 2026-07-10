@@ -396,6 +396,168 @@ const Process = () => {
   );
 };
 
+// Projects Section
+const FeaturedProjects = () => {
+  const projects = [
+    {
+      img: "/p1.webp",
+      title: "Residential Design",
+      desc: "Full-service interior design for luxury homes, apartments, and villa layouts to your lifestyle.",
+    },
+    {
+      img: "/p2.webp",
+      title: "Commercial Spaces",
+      desc: "Creating impactful environments for retail, hospitality, and public spaces that reflect brand identity.",
+    },
+    {
+      img: "/p3.webp",
+      title: "Office Design",
+      desc: "Product and inspiring workspace solutions that enhance employee well-being and efficiency.",
+    },
+    {
+      img: "/p4.webp",
+      title: "Custom Furniture",
+      desc: "Bespoke furniture design and sourcing to ensure unique pieces that perfectly fit your space.",
+    },
+    {
+      img: "/p5.webp",
+      title: "Luxury Villa",
+      desc: "Elegant and sophisticated interior design for luxury villas with stunning finishes.",
+    },
+    {
+      img: "/p6.webp",
+      title: "Restaurant Design",
+      desc: "Creating immersive dining experiences through thoughtful interior design.",
+    },
+    {
+      img: "/p7.webp",
+      title: "Office Renovation",
+      desc: "Modern and productive workspace solutions that boost employee morale and efficiency.",
+    },
+    {
+      img: "/p8.webp",
+      title: "Boutique Hotel",
+      desc: "Designing unique and memorable spaces for boutique hotels and luxury accommodations.",
+    },
+  ];
+
+  return (
+    <section
+      id="projects"
+      className="w-full px-4 sm:px-8 lg:px-16 py-16 lg:py-24"
+    >
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col sm:flex-row items-center justify-center mb-12">
+          <div className="text-center">
+            <p className="text-sm uppercase tracking-[0.3em] text-[#C4A882] font-medium ">
+              Featured Projects
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-light text-[#1A1A1A] mt-1">
+              Our Work
+            </h2>
+          </div>
+        </div>
+
+        {/* Mobile View */}
+        <div className="grid grid-cols gap-6 sm:hidden">
+          {projects.slice(0, 4).map((project, index) => (
+            <div
+              key={index}
+              className="group overflow-hidden bg-white border border-[#EDE8E1] hover:border-[#C4A882] transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="relative h-56 w-full overflow-hidden bg-[#F7F4F0]">
+                <Image
+                  src={project.img}
+                  alt={project.title}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                />
+                <div className="flex absolute m-3 justify-center items-center bg-white/70 h-7 w-7 rounded-full">
+                  0{index + 1}
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-lg font-medium text-[#1A1A1A]">
+                  {project.title}
+                </h3>
+                <p className="mt-2 text-sm text-[#666] leading-relaxed">
+                  {project.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Tablet & Desktop View */}
+        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {projects.map((project, index) => (
+            <div
+              key={index}
+              className="group overflow-hidden bg-white border border-[#EDE8E1] hover:border-[#C4A882] transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="relative h-56 w-full overflow-hidden bg-[#F7F4F0]">
+                <Image
+                  src={project.img}
+                  alt={project.title}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                />
+                <div className="flex absolute m-3 justify-center items-center bg-white/70 h-7 w-7 rounded-full">
+                  0{index + 1}
+                </div>
+              </div>
+
+              <div className="p-6">
+                <h3 className="text-lg font-medium text-[#1A1A1A]">
+                  {project.title}
+                </h3>
+                <p className="mt-2 text-sm text-[#666] leading-relaxed">
+                  {project.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* <div className=" grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-6 sm:hidden">
+          {projects.map((project, index) => (
+            <div
+              key={index}
+              className="group overflow-hidden bg-white border border-[#EDE8E1] hover:border-[#C4A882] transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="relative h-56 w-full overflow-hidden bg-[#F7F4F0]">
+                <Image
+                  src={project.img}
+                  alt={project.title}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                />
+              </div>
+
+              <div className="p-6">
+                <h3 className="text-lg font-medium text-[#1A1A1A]">
+                  {project.title}
+                </h3>
+                <p className="mt-2 text-sm text-[#666] leading-relaxed">
+                  {project.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div> */}
+      </div>
+    </section>
+  );
+};
+
 // FAQ Section
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -470,102 +632,6 @@ const FAQ = () => {
                 }`}
               >
                 <p className="text-sm text-[#666] leading-relaxed">{faq.a}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-// Projects Section
-const FeaturedProjects = () => {
-  const projects = [
-    {
-      img: "/",
-      title: "Residential Design",
-      desc: "Full-service interior design for luxury homes, apartments, and villa layouts to your lifestyle.",
-    },
-    {
-      img: "/",
-      title: "Commercial Spaces",
-      desc: "Creating impactful environments for retail, hospitality, and public spaces that reflect brand identity.",
-    },
-    {
-      img: "/",
-      title: "Office Design",
-      desc: "Product and inspiring workspace solutions that enhance employee well-being and efficiency.",
-    },
-    {
-      img: "/",
-      title: "Custom Furniture",
-      desc: "Bespoke furniture design and sourcing to ensure unique pieces that perfectly fit your space.",
-    },
-    {
-      img: "/",
-      title: "Luxury Villa",
-      desc: "Elegant and sophisticated interior design for luxury villas with stunning finishes.",
-    },
-    {
-      img: "/",
-      title: "Restaurant Design",
-      desc: "Creating immersive dining experiences through thoughtful interior design.",
-    },
-    {
-      img: "/",
-      title: "Office Renovation",
-      desc: "Modern and productive workspace solutions that boost employee morale and efficiency.",
-    },
-    {
-      img: "",
-      title: "Boutique Hotel",
-      desc: "Designing unique and memorable spaces for boutique hotels and luxury accommodations.",
-    },
-  ];
-
-  return (
-    <section
-      id="projects"
-      className="w-full px-4 sm:px-8 lg:px-16 py-16 lg:py-24"
-    >
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-center justify-center mb-12">
-          <div className="text-center">
-            <p className="text-sm uppercase tracking-[0.3em] text-[#C4A882] font-medium ">
-              Featured Projects
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-light text-[#1A1A1A] mt-1">
-              Our Work
-            </h2>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-6">
-          {projects.map((project, index) => (
-            <div
-              key={index}
-              className="group overflow-hidden bg-white border border-[#EDE8E1] hover:border-[#C4A882] transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="relative h-56 w-full overflow-hidden bg-[#F7F4F0]">
-                <Image
-                  src={project.img}
-                  alt={project.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
-                />
-              </div>
-
-              <div className="p-6">
-                <h3 className="text-lg font-medium text-[#1A1A1A]">
-                  {project.title}
-                </h3>
-                <p className="mt-2 text-sm text-[#666] leading-relaxed">
-                  {project.desc}
-                </p>
               </div>
             </div>
           ))}
