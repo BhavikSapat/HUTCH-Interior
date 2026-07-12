@@ -911,7 +911,7 @@ const Footer = () => {
                   className="flex items-center gap-3 hover:text-white transition-colors"
                 >
                   <Phone size={16} className="text-[#C4A882]" />
-                  +91 12345 67890
+                  +91 0987654321
                 </Link>
                 <Link
                   href="mailto:hello@hutch.com"
