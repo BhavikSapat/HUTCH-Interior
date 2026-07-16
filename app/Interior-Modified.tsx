@@ -12,7 +12,6 @@ import {
   Palette,
   PenTool,
   Hammer,
-  ArrowRight,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
@@ -34,20 +33,126 @@ interface IFormInput {
   query: string;
 }
 
+// Helper functions to safely parse array data (handles both array and string inputs)
+
+// For services, projects, and benefits (title | description | image)
+const safeParseArray = (data: any, defaultData: any[]): any[] => {
+  // If it's already an array with data, return it
+  if (Array.isArray(data) && data.length > 0) {
+    return data;
+  }
+
+  // If it's a string, try to parse it
+  if (typeof data === "string" && data.trim() !== "") {
+    try {
+      // Try JSON parse first
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    } catch {
+      // Parse pipe-separated format: "title | description | image"
+      const items = data
+        .split(",")
+        .map((item) => {
+          const parts = item.split("|").map((s) => s.trim());
+          if (parts.length >= 3) {
+            return {
+              title: parts[0] || "",
+              description: parts[1] || "",
+              image: parts[2] || "",
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+      if (items.length > 0) {
+        return items;
+      }
+    }
+  }
+
+  return defaultData;
+};
+
+// For FAQ items (question | answer)
+const safeParseFaqs = (data: any, defaultData: any[]): any[] => {
+  if (Array.isArray(data) && data.length > 0) {
+    return data;
+  }
+  if (typeof data === "string" && data.trim() !== "") {
+    try {
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    } catch {
+      const items = data
+        .split(",")
+        .map((item) => {
+          const parts = item.split("|").map((s) => s.trim());
+          if (parts.length >= 2) {
+            return {
+              question: parts[0] || "",
+              answer: parts[1] || "",
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+      if (items.length > 0) {
+        return items;
+      }
+    }
+  }
+  return defaultData;
+};
+
+// For process steps (number | title | description)
+const safeParseSteps = (data: any, defaultData: any[]): any[] => {
+  if (Array.isArray(data) && data.length > 0) {
+    return data;
+  }
+  if (typeof data === "string" && data.trim() !== "") {
+    try {
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    } catch {
+      const items = data
+        .split(",")
+        .map((item) => {
+          const parts = item.split("|").map((s) => s.trim());
+          if (parts.length >= 3) {
+            return {
+              number: parts[0] || "",
+              title: parts[1] || "",
+              description: parts[2] || "",
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+      if (items.length > 0) {
+        return items;
+      }
+    }
+  }
+  return defaultData;
+};
+
 export const HutchTemplate: React.FC<{ data: any }> = ({ data }) => {
   console.log("data is", data);
 
-  // Extract data from the config
-  const basicInfo = data?.tabs?.basicInfo?.fields || {};
-  const heroSection = data?.tabs?.heroSection?.fields || {};
-  const aboutSection = data?.tabs?.aboutSection?.fields || {};
-  const servicesData = data?.tabs?.services?.fields?.services || [];
-  const processData = data?.tabs?.process?.fields || {};
-  const projectsData = data?.tabs?.projects?.fields?.projects || [];
-  const faqsData = data?.tabs?.faqs?.fields?.faqs || [];
-  const contactData = data?.tabs?.contact?.fields || {};
-  const socialLinks = data?.tabs?.socialLinks?.fields || {};
-  const footerData = data?.tabs?.footer?.fields || {};
+  // Extract data from the config (FLAT STRUCTURE)
+  const basicInfo = data?.basicInfo || {};
+  const heroSection = data?.heroSection || {};
+  const aboutSection = data?.aboutSection || {};
+  const processData = data?.process || {};
+  const contactData = data?.contact || {};
+  const socialLinks = data?.socialLinks || {};
+  const footerData = data?.footer || {};
 
   // Default values
   const companyName = basicInfo.companyName || "HUTCH";
@@ -56,17 +161,22 @@ export const HutchTemplate: React.FC<{ data: any }> = ({ data }) => {
     basicInfo.description ||
     "Creating functional and timeless spaces designed to look beautiful and feel inspiring for modern living and work.";
 
-  const heroImage = heroSection.heroImage || "/hero.webp";
+  const heroImage =
+    heroSection.heroImage ||
+    "https://cdn.apartmenttherapy.info/image/upload/v1696351310/at/house%20tours/2023-House-Tours/2023-October/miranda-co/tours-brooklyn-miranda-co-6.jpg";
   const heroSubtitle = heroSection.subtitle || "Featured Projects";
   const heroTitle = heroSection.title || "Creating Interiors";
   const heroHighlight = heroSection.highlight || "That Inspire Living";
   const heroButtonText = heroSection.buttonText || "View Portfolio";
 
   const aboutHeading = aboutSection.heading || "";
-  const aboutContent = aboutSection.content || "";
+  const aboutContent =
+    aboutSection.content ||
+    "HUTCH is a design studio based in Mumbai, creating functional and timeless spaces for modern living and work. We believe in the power of thoughtful design to transform environments and enhance lives";
 
-  const processBackground = processData.backgroundImage || "/about.webp";
-  const processSteps = processData.steps || [];
+  const processBackground =
+    processData.backgroundImage ||
+    "https://img.magnific.com/free-photo/modern-minimalist-living-room-interior-design_23-2151983191.jpg?semt=ais_hybrid&w=740&q=80";
 
   const phone = contactData.phone || "+91 12345 67890";
   const email = contactData.email || "hello@hutch.com";
@@ -90,29 +200,33 @@ export const HutchTemplate: React.FC<{ data: any }> = ({ data }) => {
       title: "Residential Design",
       description:
         "Full-service interior design for luxury homes, apartments, and villa layouts to your lifestyle.",
-      image: "/s1.webp",
+      image:
+        "https://www.andacademy.com/resources/wp-content/uploads/2024/03/2-13.webp",
     },
     {
       title: "Commercial Spaces",
       description:
         "Creating impactful environments for retail, hospitality, and public spaces that reflect brand identity.",
-      image: "/s2.webp",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVmd00VblyWkkicBVR0ZduYD7hL6rSMM1rbC7YP6ukrQZ10Cc75UKJYbU&s=10",
     },
     {
       title: "Office Design",
       description:
         "Product and inspiring workspace solutions that enhance employee well-being and efficiency.",
-      image: "/s3.webp",
+      image:
+        "https://royaletouche.gumlet.io/wp-content/uploads/2024/09/27123301/interior-design-for-office1.jpg?compress=true&quality=80&w=1500&dpr=2.6",
     },
     {
       title: "Custom Furniture",
       description:
         "Bespoke furniture design and sourcing to ensure unique pieces that perfectly fit your space.",
-      image: "/s4.webp",
+      image:
+        "https://antiquehomedecors.com/wp-content/uploads/2024/08/81cvV9dc8CL._SL1500-1.jpg",
     },
   ];
 
-  const services = servicesData.length > 0 ? servicesData : defaultServices;
+  const services = safeParseArray(data?.services?.services, defaultServices);
 
   // Default projects if none provided
   const defaultProjects = [
@@ -120,53 +234,61 @@ export const HutchTemplate: React.FC<{ data: any }> = ({ data }) => {
       title: "Residential Design",
       description:
         "Full-service interior design for luxury homes, apartments, and villa layouts to your lifestyle.",
-      image: "/p1.webp",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSA7lCbz2slsDX5ZqBiPCLNDCg0JjjD6xGWwL2ecs_ulGkY3BDE7YH6P3Fc&s=10",
     },
     {
       title: "Commercial Spaces",
       description:
         "Creating impactful environments for retail, hospitality, and public spaces that reflect brand identity.",
-      image: "/p2.webp",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOa1yNrNT1znaiMfe31BHNTZsPKgZMHcOBKd5j_MkbTjFQil46guF8C6V-&s=10",
     },
     {
       title: "Office Design",
       description:
         "Product and inspiring workspace solutions that enhance employee well-being and efficiency.",
-      image: "/p3.webp",
+      image:
+        "https://cdn.decorilla.com/online-decorating/wp-content/uploads/2024/05/Contemporary-executive-office-design-by-Decorilla-1024x574.jpeg?width=900",
     },
     {
       title: "Custom Furniture",
       description:
         "Bespoke furniture design and sourcing to ensure unique pieces that perfectly fit your space.",
-      image: "/p4.webp",
+      image:
+        "https://www.curvesandcarvings.com/pub/media/mageplaza/blog/post/w/h/why_is_customised_furniture_in_mumbai_1.jpg",
     },
     {
       title: "Luxury Villa",
       description:
         "Elegant and sophisticated interior design for luxury villas with stunning finishes.",
-      image: "/p5.webp",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwfbVp0NejqNtf9alO22AHXwgtTYw29r2-N01aPcPIvjqnUrwN_gF2Lxc&s=10",
     },
     {
       title: "Restaurant Design",
       description:
         "Creating immersive dining experiences through thoughtful interior design.",
-      image: "/p6.webp",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7DTnlg2uXhKgX7GcvKasd7J3b6yx_T3cHZxhy29jCQy3rBz-DtmLbKTE&s=10",
     },
     {
       title: "Office Renovation",
       description:
         "Modern and productive workspace solutions that boost employee morale and efficiency.",
-      image: "/p7.webp",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTS6Uxr60TzIM8AopqQfx0QxB1LCAEaGwkcg2QJDtiUB1ElhLvmNZ_doXM&s=10",
     },
     {
       title: "Boutique Hotel",
       description:
         "Designing unique and memorable spaces for boutique hotels and luxury accommodations.",
-      image: "/p8.webp",
+      image:
+        "https://assets.architecturaldigest.in/photos/67bd5b1af91a1a5f0a072e1b/16:9/w_2560%2Cc_limit/Untitled%2520design.jpg",
     },
   ];
 
-  const projects = projectsData.length > 0 ? projectsData : defaultProjects;
+  const projects = safeParseArray(data?.projects?.projects, defaultProjects);
 
   // Default FAQs if none provided
   const defaultFaqs = [
@@ -197,7 +319,7 @@ export const HutchTemplate: React.FC<{ data: any }> = ({ data }) => {
     },
   ];
 
-  const faqs = faqsData.length > 0 ? faqsData : defaultFaqs;
+  const faqs = safeParseFaqs(data?.faqs?.faqs, defaultFaqs);
 
   // Default process steps if none provided
   const defaultSteps = [
@@ -227,7 +349,7 @@ export const HutchTemplate: React.FC<{ data: any }> = ({ data }) => {
     },
   ];
 
-  const steps = processSteps.length > 0 ? processSteps : defaultSteps;
+  const steps = safeParseSteps(processData.steps, defaultSteps);
 
   return (
     <>
@@ -242,7 +364,7 @@ export const HutchTemplate: React.FC<{ data: any }> = ({ data }) => {
             priority
             className="object-cover -z-10"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/60 md:via-transparent to-transparent -z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/100 via-black/90 md:via-transparent to-transparent -z-10" />
           <Hero
             subtitle={heroSubtitle}
             title={heroTitle}
@@ -286,7 +408,7 @@ export const HutchTemplate: React.FC<{ data: any }> = ({ data }) => {
 
         <section id="faqs" className="relative min-h-auto overflow-hidden">
           <Image
-            src="/faqs.webp"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo-cAM3FulKyFSnaViW1OmQ87D9aKT07MDTpUDR3be9IN-ugEJHQDP4rc&s=10"
             alt="FAQ Background"
             fill
             priority
